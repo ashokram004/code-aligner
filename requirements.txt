@@ -1,0 +1,7 @@
+google-generativeai
+chromadb
+sentence-transformers
+streamlit
+datasets
+tqdm
+python-dotenv

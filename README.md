@@ -1,94 +1,155 @@
-🧬 CodeAligner AI
-The Execution-Aware Coding Assistant
-CodeAligner goes beyond standard AI chat. It is a sophisticated analysis tool that executes your code side-by-side with verified "Golden Solutions" to detect logic bugs, runtime crashes, and time complexity issues ($O(n^2)$ vs $O(n)$) using real-time execution traces.
-🚀 Key Features
-🕵️ Universal Inspector: Automatically detects programming language (Python, C++, Java), extracts function names, and generates valid test cases using Google Gemini.
-🧠 Hybrid Vector Search: Uses ChromaDB to match your code against a local database of 2,500+ LeetCode solutions. It combines your code logic with AI-predicted problem names for higher accuracy.
-⚡ Execution Tracing (Python): Runs your code and the "Golden Solution" in a sandbox, recording every step (sys.settrace) to compare logic flow and variable states.
-📉 Complexity Analysis: Detects if your code takes significantly more steps than the optimal solution (e.g., Bubble Sort vs. Quick Sort).
-🎓 AI Mentor Mode: Provides constructive feedback, explaining why your code is wrong or slow, rather than just rewriting it.
+# 🧬 CodeAligner AI  
+### **The Execution-Aware Coding Assistant**
 
+CodeAligner goes beyond standard AI chat assistants. It is a **deep analysis engine** that executes your code side-by-side with verified *Golden Solutions* to detect:
 
+- Logic bugs  
+- Runtime crashes  
+- Time & space inefficiencies (e.g., **O(n²)** vs **O(n)**)  
+- Unexpected control-flow differences  
 
-🛠️ Installation
-1. Clone the Repository
-git clone [https://github.com/yourusername/CodeAligner.git](https://github.com/yourusername/CodeAligner.git)
+All using **real-time execution traces**.
+
+---
+
+## 🚀 Key Features
+
+### 🕵️ **Universal Inspector**
+- Detects programming language automatically (Python / C++ / Java)  
+- Extracts function signatures  
+- Generates valid test cases using **Google Gemini**
+
+### 🧠 **Hybrid Vector Search**
+- Built on **ChromaDB**  
+- Matches your code against **2,500+ LeetCode solutions**  
+- Uses both code logic and AI-predicted problem names for high-accuracy lookup
+
+### ⚡ **Execution Tracing (Python)**
+- Runs your code + the Golden Solution in a sandbox  
+- Compares step-by-step execution with `sys.settrace`  
+- Captures variable states and call graph
+
+### 📉 **Complexity Analysis**
+- Detects abnormally slow patterns  
+- Example: Bubble Sort vs Quick Sort  
+- Highlights loops, nested loops, and repeated operations
+
+### 🎓 **AI Mentor Mode**
+- Gives constructive, developer-friendly feedback  
+- Points out root causes instead of just rewriting your code  
+
+---
+
+## 🛠️ Installation
+
+### **1. Clone the Repository**
+```bash
+git clone https://github.com/yourusername/CodeAligner.git
 cd CodeAligner
+```
 
+### **2. Set up Virtual Environment** *(Recommended)*
 
-2. Set up Virtual Environment (Highly Recommended)
-# Windows
+#### Windows
+```bash
 python -m venv venv
-.\venv\Scripts\activate
+.env\Scriptsctivate
+```
 
-# Mac/Linux
+#### Mac/Linux
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-
-3. Install Dependencies
+### **3. Install Dependencies**
+```bash
 pip install -r requirements.txt
+```
 
+---
 
-4. Get a Free API Key
-You need a Google Gemini API Key (Free Tier available).
-Go to Google AI Studio.
-Create an API Key.
-You will input this key in the App UI.
-⚙️ Database Setup (First Run Only)
-Before you can run the app, you must build the local Vector Database. This script downloads the LeetCode dataset and embeds it into ChromaDB.
+## 🔑 Get Your API Key
+
+You need a **Google Gemini API Key** (Free tier available).
+
+1. Go to **Google AI Studio**  
+2. Create an API Key  
+3. Enter this key inside the CodeAligner App UI when prompted
+
+---
+
+## ⚙️ Database Setup (First Run Only)
+
+CodeAligner uses a custom LeetCode dataset embedded locally using ChromaDB.
+
+Run:
+```bash
 python build_db.py
+```
 
+You will see:
 
-Note: This process might take 2-5 minutes depending on your internet and CPU. Wait until you see: SUCCESS! Database built.
+```
+SUCCESS! Database built.
+```
 
-🖥️ Usage
+---
+
+## 🖥️ Usage
+
 You can run CodeAligner in two modes:
-🌟 Mode 1: Web Interface (Recommended)
-A beautiful, interactive UI built with Streamlit.
-Run the command:
+
+---
+
+## 🌟 Mode 1: Web Interface (Recommended)
+
+```bash
 streamlit run app.py
+```
 
+Open: **http://localhost:8501**
 
-A browser window will open automatically at http://localhost:8501.
-Enter your Gemini API Key in the sidebar.
-Paste your code and click "Run Analysis".
-💻 Mode 2: CLI (Terminal Mode)
-For developers who prefer the command line.
-Open main.py.
-Paste your API key into the API_KEY variable (or use Environment Variables).
-Run the script:
+- Enter your **Gemini API Key**  
+- Paste your code  
+- Click **Run Analysis**
+
+---
+
+## 💻 Mode 2: CLI Mode (Terminal)
+
+Add your API key in `main.py` and run:
+
+```bash
 python main.py
+```
 
+---
 
-To test different code, modify the if __name__ == "__main__": block at the bottom of main.py.
+## 📂 Project Structure
 
-📂 Project Structure
-File
-Description
-app.py
-Main Frontend Application (Streamlit)
-main.py
-Main CLI Controller / Logic Pipeline
-inspector.py
-AI Module: Language detection & Test case generation
-tracer.py
-Engine: Handles sys.settrace execution & logging
-search_engine.py
-Engine: Handles Vector Search logic
-build_db.py
-Setup Script: Builds the local ChromaDB database
-leetcodedb_data/
-(Generated) The folder containing vector data
-requirements.txt
-Python dependencies
+| File / Folder          | Description |
+|------------------------|-------------|
+| `app.py`               | Streamlit UI |
+| `main.py`              | CLI pipeline controller |
+| `inspector.py`         | Language detection + test case generator |
+| `tracer.py`            | Execution tracing engine |
+| `search_engine.py`     | Vector search logic |
+| `build_db.py`          | Script to build local ChromaDB |
+| `leetcodedb_data/`     | Auto-generated vector database |
+| `requirements.txt`     | Dependency list |
 
+---
 
-🤝 Contributing
-Fork the repository.
-Create a feature branch (git checkout -b feature/NewFeature).
-Commit your changes.
-Push to the branch and open a Pull Request.
+## 🤝 Contributing
 
-📄 License
-This project is open-source and available for educational purposes.
+1. Fork the repo  
+2. Create a feature branch  
+3. Commit changes  
+4. Open a Pull Request  
+
+---
+
+## 📄 License
+
+This project is **open-source** and intended for **educational purposes**.
