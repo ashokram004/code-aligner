@@ -44,7 +44,7 @@ All using **real-time execution traces**.
 
 ### **1. Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/CodeAligner.git
+git clone https://github.com/ashokram004/code-aligner.git
 cd CodeAligner
 ```
 
@@ -53,7 +53,7 @@ cd CodeAligner
 #### Windows
 ```bash
 python -m venv venv
-.env\Scriptsctivate
+.\venv\Scripts\activate
 ```
 
 #### Mac/Linux
