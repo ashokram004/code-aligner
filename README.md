@@ -98,11 +98,9 @@ SUCCESS! Database built.
 
 ## 🖥️ Usage
 
-You can run CodeAligner in two modes:
+You can run CodeAligner in web interface using Streamlit:
 
 ---
-
-## 🌟 Mode 1: Web Interface (Recommended)
 
 ```bash
 streamlit run app.py
@@ -116,22 +114,12 @@ Open: **http://localhost:8501**
 
 ---
 
-## 💻 Mode 2: CLI Mode (Terminal)
-
-Add your API key in `main.py` and run:
-
-```bash
-python main.py
-```
-
----
-
 ## 📂 Project Structure
 
 | File / Folder          | Description |
 |------------------------|-------------|
 | `app.py`               | Streamlit UI |
-| `main.py`              | CLI pipeline controller |
+| `cli_runner.py`        | CLI pipeline controller |
 | `inspector.py`         | Language detection + test case generator |
 | `tracer.py`            | Execution tracing engine |
 | `search_engine.py`     | Vector search logic |
