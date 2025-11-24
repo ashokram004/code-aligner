@@ -1,143 +1,167 @@
-# 🧬 CodeAligner AI  
-### **The Execution-Aware Coding Assistant**
+# CodeAligner AI  
+**Execution-Aware Code Diagnostics**
 
-CodeAligner goes beyond standard AI chat assistants. It is a **deep analysis engine** that executes your code side-by-side with verified *Golden Solutions* to detect:
-
-- Logic bugs  
-- Runtime crashes  
-- Time & space inefficiencies (e.g., **O(n²)** vs **O(n)**)  
-- Unexpected control-flow differences  
-
-All using **real-time execution traces**.
+CodeAligner AI is an analysis framework designed to evaluate code by executing it alongside verified “Golden Solutions”. Instead of relying solely on static analysis or pattern matching, CodeAligner focuses on **observable execution behavior**, surfacing issues that traditional linters or AI assistants typically miss.
 
 ---
 
-## 🚀 Key Features
+## 1. Overview
 
-### 🕵️ **Universal Inspector**
-- Detects programming language automatically (Python / C++ / Java)  
-- Extracts function signatures  
-- Generates valid test cases using **Google Gemini**
+Modern AI code assistants are excellent at generating code, but they struggle at verifying it. CodeAligner shifts the focus to correctness by examining:
 
-### 🧠 **Hybrid Vector Search**
-- Built on **ChromaDB**  
-- Matches your code against **2,500+ LeetCode solutions**  
-- Uses both code logic and AI-predicted problem names for high-accuracy lookup
+- Behavioral differences between user code and reference implementations  
+- Runtime failures and hidden edge cases  
+- Pattern-level inefficiencies in logic and complexity  
+- Variable and control-flow deviations uncovered via trace comparison  
 
-### ⚡ **Execution Tracing (Python)**
-- Runs your code + the Golden Solution in a sandbox  
-- Compares step-by-step execution with `sys.settrace`  
-- Captures variable states and call graph
-
-### 📉 **Complexity Analysis**
-- Detects abnormally slow patterns  
-- Example: Bubble Sort vs Quick Sort  
-- Highlights loops, nested loops, and repeated operations
-
-### 🎓 **AI Mentor Mode**
-- Gives constructive, developer-friendly feedback  
-- Points out root causes instead of just rewriting your code  
+The system integrates execution tracing, vector search, and AI-generated test cases into a single end-to-end analysis workflow.
 
 ---
 
-## 🛠️ Installation
+## 2. Core Capabilities
 
-### **1. Clone the Repository**
+### **Language & Structure Analysis**
+- Automatic language detection (Python, C++, Java)
+- Function signature extraction
+- Dynamic test-case generation powered by Gemini models
+
+### **Vector-Based Code Retrieval**
+- Backed by ChromaDB  
+- Compares your submission against a curated index of 2,500+ LeetCode reference solutions  
+- Uses a hybrid scoring approach (structural logic + predicted problem name)
+
+### **Execution Trace Engine (Python)**
+- Instruments both implementations via `sys.settrace`
+- Records variable snapshots, call stack, and branching events
+- Produces a step-level diff to expose incorrect states
+
+### **Performance Diagnostics**
+- Identifies nested loops or patterns affecting complexity
+- Highlights potentially slow constructs (e.g., repeated scans or redundant operations)
+- Detects mismatches between expected and actual time/space behavior
+
+### **Mentorship Layer**
+- Provides targeted feedback grounded in trace evidence  
+- Explains failures without rewriting your code by default  
+
+---
+
+## 3. Getting Started
+
+### **Clone the Repository**
 ```bash
 git clone https://github.com/ashokram004/code-aligner.git
 cd CodeAligner
 ```
 
-### **2. Set up Virtual Environment** *(Recommended)*
-
+### **Create a Virtual Environment**
 #### Windows
 ```bash
 python -m venv venv
-.\venv\Scripts\activate
+.env\Scriptsctivate
 ```
 
-#### Mac/Linux
+#### macOS / Linux
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### **3. Install Dependencies**
+### **Install Dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🔑 Get Your API Key
+## 4. API Configuration
 
-You need a **Google Gemini API Key** (Free tier available).
+CodeAligner requires a Gemini API key for test-case generation.
 
-1. Go to **Google AI Studio**  
-2. Create an API Key  
-3. Enter this key inside the CodeAligner App UI when prompted
+1. Open **Google AI Studio**  
+2. Generate an API Key  
+3. Provide the key inside the application UI when prompted  
+
+No environment variables are required; the key is stored in-session only.
 
 ---
 
-## ⚙️ Database Setup (First Run Only)
+## 5. Database Initialization
 
-CodeAligner uses a custom LeetCode dataset embedded locally using ChromaDB.
+The first run requires building a local ChromaDB index containing the LeetCode dataset.
 
-Run:
 ```bash
 python build_db.py
 ```
 
-You will see:
+Successful completion prints:
 
 ```
 SUCCESS! Database built.
 ```
 
+The generated files will appear in:  
+```
+leetcodedb_data/
+```
+
 ---
 
-## 🖥️ Usage
+## 6. Running the Application
 
-You can run CodeAligner in web interface using Streamlit:
-
----
-
+### Web Interface (recommended)
 ```bash
 streamlit run app.py
 ```
 
-Open: **http://localhost:8501**
+After starting, navigate to:
 
-- Enter your **Gemini API Key**  
-- Paste your code  
-- Click **Run Analysis**
+```
+http://localhost:8501
+```
 
----
+Paste your code → add Gemini key → Run Analysis.
 
-## 📂 Project Structure
+### CLI Mode
+The pipeline is also available via:
 
-| File / Folder          | Description |
-|------------------------|-------------|
-| `app.py`               | Streamlit UI |
-| `cli_runner.py`        | CLI pipeline controller |
-| `inspector.py`         | Language detection + test case generator |
-| `tracer.py`            | Execution tracing engine |
-| `search_engine.py`     | Vector search logic |
-| `build_db.py`          | Script to build local ChromaDB |
-| `leetcodedb_data/`     | Auto-generated vector database |
-| `requirements.txt`     | Dependency list |
+```
+python cli_runner.py
+```
 
 ---
 
-## 🤝 Contributing
+## 7. Repository Layout
 
-1. Fork the repo  
+```
+CodeAligner/
+│
+├── app.py                # Streamlit UI
+├── cli_runner.py         # Command-line analysis flow
+├── inspector.py          # Language + signature + test generator
+├── tracer.py             # Execution trace instrumentation
+├── search_engine.py      # Vector-based code retrieval
+├── build_db.py           # Local ChromaDB builder
+├── leetcodedb_data/      # Generated database directory
+└── requirements.txt      # Python dependencies
+```
+
+---
+
+## 8. Contributing
+
+Contributions are welcome. To propose a change:
+
+1. Fork the repository  
 2. Create a feature branch  
-3. Commit changes  
-4. Open a Pull Request  
+3. Implement your changes  
+4. Submit a pull request with a clear summary  
+
+For major features, please open an issue beforehand.
 
 ---
 
-## 📄 License
+## 9. License
 
-This project is **open-source** and intended for **educational purposes**.
+This project is open-source and intended for research and educational usage.  
+See the LICENSE file for details.
