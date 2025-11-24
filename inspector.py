@@ -2,37 +2,44 @@ import google.generativeai as genai
 import json
 import re
 
-def inspect_code_snippet(code_str, api_key):
+def inspect_code_snippet(code_str, problem_desc, api_key):
     """
-    Analyzes code using Gemini. Requires API Key passed from Frontend.
+    Analyzes code/description to find the LeetCode URL SLUG.
     """
-    if not api_key:
-        print("❌ Error: API Key missing in inspector.")
-        return None
+    if not api_key: return None
 
-    # 1. Configure AI dynamically using the user's key
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-2.0-flash')
 
-    print("   [inspector] 🕵️ AI Detective is profiling the code...")
+    print(f"   [inspector] 🕵️ Analyzing for LeetCode Slug...")
     
     prompt = f"""
-    Analyze this code snippet deeply. 
-    1. Identify the programming language.
-    2. Identify the entry function name used by the user.
-    3. Generate a valid test case input (tuple format).
-    4. PREDICTION: Based on the logic, what is the MOST LIKELY standard LeetCode problem name?
-       (e.g. "Two Sum", "Binary Search", "Merge Sort").
-
-    CODE:
+    You are a LeetCode Expert.
+    
+    USER PROBLEM DESCRIPTION:
+    "{problem_desc}"
+    
+    USER CODE SNIPPET:
     {code_str}
 
-    Return ONLY raw JSON. Format:
+    TASK:
+    1. Identify the programming language.
+    2. Identify the entry function name.
+    3. COUNT the arguments in the user's function definition.
+    4. Generate a valid test case tuple that matches the argument count EXACTLY.
+       - If function is `def f(nums):` -> test_input must be `([1, 2, 3],)` (1 arg)
+       - If function is `def f(nums, target):` -> test_input must be `([1, 2, 3], 5)` (2 args)
+    5. DEDUCE the standard LeetCode URL SLUG.
+       - Format: lowercase-with-dashes
+       - Example: "Two Sum" -> "two-sum"
+       - Example: "Best Time to Buy and Sell Stock" -> "best-time-to-buy-and-sell-stock"
+
+    Return ONLY raw JSON:
     {{
         "language": "python",
-        "user_function": "my_algo_name",
-        "predicted_problem": "Name of LeetCode Problem",
-        "test_input": "([1,2,3], 5)"
+        "user_function": "my_func",
+        "predicted_slug": "two-sum",
+        "test_input": "([1,2,3],)" 
     }}
     """
     

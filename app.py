@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
-import time
 from google.api_core.exceptions import ResourceExhausted
+import time
 
 # IMPORT YOUR BACKEND MODULES
 from tracer import CodeTracer
@@ -16,11 +16,11 @@ with st.sidebar:
     st.title("🧬 CodeAligner")
     st.markdown("The **Execution-Aware** Code Assistant.")
     
-    # Securely input API Key here (so you don't hardcode it)
+    # Securely input API Key here
     api_key = st.text_input("Gemini API Key", type="password")
     
     st.divider()
-    st.info("💡 This tool runs your code, finds a matching solution in the vector DB, and uses AI to compare execution traces.")
+    st.info("💡 Paste the problem description to help the AI find the exact reference solution in the database.")
 
 # --- HELPER: AI FEEDBACK ---
 def get_ui_feedback(model, user_code, lang, issue_type, context):
@@ -39,8 +39,7 @@ def get_ui_feedback(model, user_code, lang, issue_type, context):
             return response.text
             
     except ResourceExhausted:
-        # This catches the "Free Tier Limit Reached" error
-        return "⚠️ **AI Traffic Limit Reached.** I am using the free tier of Gemini. Please wait for sometime and try again!"
+        return "⚠️ **AI Traffic Limit Reached.** I am using the free tier of Gemini. Please wait for a minute and try again!"
         
     except Exception as e:
         return f"❌ An unexpected error occurred: {str(e)}"
@@ -50,6 +49,12 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     st.subheader("1️⃣ Input Code")
+    
+    # NEW: Problem Description Input
+    problem_desc = st.text_area("Problem Description (Optional but Recommended):", 
+                               placeholder="e.g., Given an array of integers, find two numbers that add up to a specific target.",
+                               height=100)
+
     # Default buggy code example
     default_code = """def find_max(arr):
     m = 0 # Bug: Should be arr[0] or -inf
@@ -76,9 +81,10 @@ if run_btn:
         
         # PHASE 1: INSPECTION
         with st.status("🕵️ Inspecting Code...", expanded=True) as status:
-            st.write("Using AI to detect language and structure...")
+            st.write("Using AI to analyze description and code structure...")
             
-            meta = inspect_code_snippet(user_code, api_key)
+            # UPDATE: Pass description to inspector
+            meta = inspect_code_snippet(user_code, problem_desc, api_key)
             
             if not meta:
                 st.error("Could not analyze code. Please check your API Key.")
@@ -86,12 +92,13 @@ if run_btn:
                 
             lang = meta.get('language', 'unknown')
             func_name = meta.get('user_function', 'unknown')
-            prediction = meta.get('predicted_problem', 'Unknown')
+            # Inspector now returns 'predicted_slug' based on description
+            slug = meta.get('predicted_slug', 'Unknown')
             inputs_str = meta.get('test_input', '()')
             
             st.write(f"**Language:** `{lang.upper()}`")
             st.write(f"**Function:** `{func_name}`")
-            st.write(f"**AI Prediction:** *{prediction}*")
+            st.write(f"**Target Problem:** `{slug}`")
             status.update(label="Inspection Complete", state="complete", expanded=False)
 
         # PHASE 2: EXECUTION (Python Only)
@@ -134,26 +141,29 @@ if run_btn:
 
         # PHASE 3: DATABASE SEARCH & COMPARISON
         st.divider()
-        st.caption(f"Searching Knowledge Base for '{prediction}'...")
+        st.caption(f"Searching Knowledge Base for '{slug}'...")
         
-        golden_code, conf = find_solution(user_code, predicted_name=prediction)
+        # UPDATE: Pass predicted slug to search engine
+        golden_code, conf = find_solution(user_code, predicted_slug=slug)
         
         feedback_type = "INDEPENDENT REVIEW"
         context_msg = "No DB match. Analyzing complexity."
         
-        if conf > 0.35:
-            st.success(f"✅ Match Found! (Similarity: {conf:.1%})")
+        # If confidence > 0.9, it means we found an EXACT slug match
+        if conf > 0.9:
+            st.success(f"✅ Reference Found! (Exact Match)")
             
             # Try to run golden code
             if lang.lower() == 'python':
-                gold_meta = inspect_code_snippet(golden_code)
+                # Inspect golden code to find ITS function name
+                gold_meta = inspect_code_snippet(golden_code, "", api_key)
                 if gold_meta:
-                    g_func = gold_meta.get('user_function') or gold_meta.get('standard_function_name')
+                    g_func = gold_meta.get('user_function') or "twoSum" # Fallback
                     g_res, g_log = tracer.run(golden_code, g_func, real_args, is_class=True)
                     
                     st.write(f"**Optimized Output:** `{g_res}` (Steps: {len(g_log)})")
                     
-                    # Compare
+                    # Compare Logic
                     if str(u_res) != str(g_res):
                         feedback_type = "LOGIC BUG"
                         context_msg = f"User got {u_res}, Expected {g_res}"
@@ -163,12 +173,12 @@ if run_btn:
                     else:
                         feedback_type = "GOOD CODE"
                         context_msg = "Code is efficient and correct."
-                        st.balloons() # Fun effect for correct code!
+                        st.balloons()
 
             with st.expander("📖 View Reference Solution"):
                 st.code(golden_code, language=lang)
         else:
-            st.warning("⚠️ No exact database match found. Using AI fallback.")
+            st.warning(f"No exact match for '{slug}'. Using AI fallback.")
 
         # PHASE 4: FINAL AI FEEDBACK
         st.subheader("3️⃣ AI Mentor Feedback")

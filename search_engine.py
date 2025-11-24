@@ -1,23 +1,35 @@
 import chromadb
 from sentence_transformers import SentenceTransformer
 
+print("   [Search Engine] Loading Model & DB...")
 client = chromadb.PersistentClient(path="./leetcodedb_data")
 collection = client.get_collection(name="leetcode_solutions")
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-def find_solution(user_code, predicted_name=None):
-    # STRATEGY: Hybrid Search
-    # We combine the User's Code Logic + The AI's Prediction into one strong query vector.
+def find_solution(user_code, predicted_slug=None):
+    """
+    Priority 1: Exact Metadata Match on Slug (100% Accuracy).
+    Priority 2: Vector Search on Code Logic (Fallback).
+    """
     
-    if predicted_name:
-        print(f"   [search] 🔍 Boosting search with prediction: '{predicted_name}'")
-        # We weigh the prediction heavily so it pulls us to the right topic
-        search_query = f"{predicted_name} {predicted_name} {user_code[:200]}"
-    else:
-        search_query = user_code
+    # STRATEGY 1: EXACT METADATA LOOKUP (The "Direct Hit")
+    if predicted_slug:
+        print(f"   [search] 🔍 Attempting Direct Lookup for slug: '{predicted_slug}'...")
+        
+        # ChromaDB filter query
+        direct_hit = collection.get(
+            where={"name": predicted_slug},
+            limit=1,
+            include=["documents", "metadatas"]
+        )
+        
+        if direct_hit['ids']:
+            print(f"   [search] 🎯 SUCCESS: Exact match found for '{predicted_slug}'!")
+            return direct_hit['documents'][0], 1.0
 
-    query_vector = model.encode(search_query).tolist()
-    
+    # STRATEGY 2: VECTOR SEARCH (Fallback)
+    print(f"   [search] ⚠️ Direct lookup failed. Falling back to Vector Search...")
+    query_vector = model.encode(user_code).tolist()
     results = collection.query(
         query_embeddings=[query_vector],
         n_results=1 
