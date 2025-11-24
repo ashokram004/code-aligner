@@ -84,14 +84,16 @@ Open http://localhost:8501
 
 ## Project Structure
 
-app.py – Streamlit UI  
-cli_runner.py – CLI pipeline controller  
-inspector.py – Language detection + test case generator  
-tracer.py – Execution tracing engine  
-search_engine.py – Vector search logic  
-build_db.py – Local ChromaDB builder  
-leetcodedb_data/ – Auto-generated vector database  
-requirements.txt – Dependency list
+| File / Folder          | Description |
+|------------------------|-------------|
+| `app.py`               | Streamlit UI |
+| `cli_runner.py`        | CLI controller |
+| `inspector.py`         | Language detection + test case generator |
+| `tracer.py`            | Execution tracing engine |
+| `search_engine.py`     | Vector search logic |
+| `build_db.py`          | Script to build local ChromaDB |
+| `leetcodedb_data/`     | Auto-generated vector database |
+| `requirements.txt`     | Dependency list |
 
 ---
 
