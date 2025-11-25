@@ -12,6 +12,12 @@ By combining dataset-backed matching, execution tracing, and AI-assisted reasoni
 
 ---
 
+## Screenshots
+
+<img width="1920" height="964" alt="image" src="https://github.com/user-attachments/assets/a7a93e10-a8b1-4e94-8337-2a6d9f8cea98" />
+
+---
+
 ## Key Features
 
 ### Universal Inspector
@@ -107,3 +113,4 @@ Open http://localhost:8501
 
 ## License
 Open-source and intended for educational purposes.
+
