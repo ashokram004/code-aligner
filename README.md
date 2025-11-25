@@ -16,6 +16,10 @@ By combining dataset-backed matching, execution tracing, and AI-assisted reasoni
 
 <img width="1920" height="964" alt="image" src="https://github.com/user-attachments/assets/a7a93e10-a8b1-4e94-8337-2a6d9f8cea98" />
 
+<img width="1920" height="959" alt="image" src="https://github.com/user-attachments/assets/9d0ab779-1373-4e5a-876d-07b9d1a4458e" />
+
+<img width="1918" height="955" alt="image" src="https://github.com/user-attachments/assets/7710701d-5c6d-43aa-b809-844b97da46d7" />
+
 ---
 
 ## Key Features
@@ -113,4 +117,5 @@ Open http://localhost:8501
 
 ## License
 Open-source and intended for educational purposes.
+
 
