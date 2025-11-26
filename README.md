@@ -12,6 +12,12 @@ By combining dataset-backed matching, execution tracing, and AI-assisted reasoni
 
 ---
 
+## High Level Architecture
+
+<img width="1005" height="668" alt="CodeAlignerAI" src="https://github.com/user-attachments/assets/f9266f8a-f5f8-47b8-85e0-e8d9ace9f1a9" />
+
+---
+
 ## Screenshots
 
 <img width="1920" height="964" alt="image" src="https://github.com/user-attachments/assets/a7a93e10-a8b1-4e94-8337-2a6d9f8cea98" />
@@ -117,5 +123,6 @@ Open http://localhost:8501
 
 ## License
 Open-source and intended for educational purposes.
+
 
 
